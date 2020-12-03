@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Check : Adresse cohérentes";
+}
+<ul>
+    @foreach (var error in ViewBag.Errors)
+    {
+        <li>@error.value_a | @error.expectedValue_a</li>
+    }
+</ul>

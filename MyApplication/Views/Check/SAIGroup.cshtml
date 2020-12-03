@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Check : Groupe SAIUSER";
+}
+<ul>
+    @foreach (var user in ViewBag.Users)
+    {
+        <li>@user.SamAccountName</li>
+    }
+</ul>

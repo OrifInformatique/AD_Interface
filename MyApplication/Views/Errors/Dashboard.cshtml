@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Dashboard";
+}
+<table class="table">
+    <tr>
+        <th>Objet</th>
+        <th>Erreur</th>
+    </tr>
+    @foreach (var error in ViewBag.Errors)
+    {
+        if (error.expectedValue_a == "Not empty")
+        {
+            <tr>
+                <td>@error.samAccountName_a</td>
+                <td>Le champ "@error.field_a" ne devrait pas être vide</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>@error.samAccountName_a</td>
+                <td>
+                    Le champ "@error.field_a" ne correspond pas au champ "@error.field_b"<br />
+                    Valeur du champ "@error.field_b" : @error.value_b<br />
+                    Valeur du champ "@error.field_a" : @error.value_a<br />
+                    Valeur attendue : @error.expectedValue_a
+                </td>
+            </tr>
+        }
+    }
+</table>

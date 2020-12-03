@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Groupe";
+}
+
+<div class="row">
+    <div class="col-lg-6"><strong>Groupe:</strong> @ViewBag.Group.PropertyToString("samAccountName")</div>
+    <div class="col-lg-6"><strong>Description:</strong> @ViewBag.Group.PropertyToString("description")</div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h4>Groupes:</h4>
+        <ul>
+            @foreach (var group in ViewBag.Groups)
+            {
+                <li><a href="~/Info/DetailGroup/@group.PropertyToString("samAccountName")/@(ViewBag.Recursive ? "1" : "0")">@group.PropertyToString("samAccountName")</a></li>
+            }
+        </ul>
+        <h4>Utilisateurs:</h4>
+        @if (ViewBag.Groups.Length != 0)
+        {
+            if (ViewBag.Recursive)
+            {
+                <a href="~/Info/DetailGroup/@ViewBag.group.PropertyToString("samAccountName")/0">Cacher les utilisateurs des sous-groupes (actuellement affichés)</a>
+            }
+            else
+            {
+                <a href="~/Info/DetailGroup/@ViewBag.group.PropertyToString("samAccountName")/1">Voir les utilisateurs des sous-groupes (actuellement cachés)</a>
+            }
+        }
+        <ul>
+            @foreach (var user in ViewBag.Users)
+            {
+                <li>@user.PropertyToString("cn") <a href="~/Info/DetailUser/@user.PropertyToString("samAccountName")"><i class="fas fa-external-link-alt"></i></a></li>
+            }
+        </ul>
+    </div>
+</div> 

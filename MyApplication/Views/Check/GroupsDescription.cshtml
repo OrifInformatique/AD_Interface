@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Check : Description non vides";
+}
+<ul>
+    @foreach (var group in ViewBag.Groups)
+    {
+        <li>@group.PropertyToString("samAccountName")</li>
+    }
+</ul>

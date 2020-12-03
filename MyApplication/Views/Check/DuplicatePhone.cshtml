@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Check : Same Phone Number";
+}
+
+<table class="table">
+    <tr>
+        <th>Numéro de téléphone</th>
+        <th>Identifiant</th>
+        <th>Prénom</th>
+        <th>Nom</th>
+        <th>Site</th>
+    </tr>
+    @foreach (var phones in ViewBag.Users.Values)
+    {
+        foreach (var usr in phones)
+        {
+            <tr>
+                @if (usr == phones[0])
+                {
+                    <td rowspan="@phones.Count">@usr.PropertyToString("telephoneNumber")</td>
+                }
+                <td><a href="~/Info/DetailUser/@usr.PropertyToString("samAccountName")">@usr.PropertyToString("samAccountName")</a></td>
+                <td>@usr.PropertyToString("givenName")</td>
+                <td>@usr.PropertyToString("sn")</td>
+                <td>@usr.PropertyToString("company")</td>
+            </tr>
+        }
+    }
+</table>

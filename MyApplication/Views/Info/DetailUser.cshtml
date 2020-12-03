@@ -1,0 +1,85 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Info utilisateur";
+}
+@if (!ViewBag.User.IsActive())
+{
+    <div class="alert alert-danger" role="alert">Ce compte est désactivé</div>
+}
+<div class="row">
+    <div class="col-lg-3"><strong>Identifiant:</strong> @ViewBag.User.PropertyToString("samAccountName")</div>
+    <div class="col-lg-3"><strong>Nom:</strong> @ViewBag.User.PropertyToString("sn")</div>
+    <div class="col-lg-3"><strong>Prénom:</strong> @ViewBag.User.PropertyToString("givenName")</div>
+    <div class="col-lg-3"><strong>Description:</strong> @ViewBag.User.PropertyToString("description")</div>
+</div>
+<div class="row">
+    <div class="col-lg-3"><strong>Expiration:</strong> @ViewBag.User.GetAccountExpires()</div>
+    <div class="col-lg-3"><strong>Numéro de téléphone:</strong> @ViewBag.User.PropertyToString("telephoneNumber")</div>
+    <div class="col-lg-6"><strong>E-mail:</strong> @ViewBag.User.PropertyToString("mail")</div>
+</div>
+<div class="row">
+    <div class="col-lg-3"><strong>Entreprise:</strong> @ViewBag.User.PropertyToString("company")</div>
+    <div class="col-lg-3"><strong>Département:</strong> @ViewBag.User.PropertyToString("department")</div>
+    <div class="col-lg-6"><strong>Titre:</strong> @ViewBag.User.PropertyToString("Title")</div>
+</div>
+<br />
+<div class="row">
+    <div class="col-lg-6">
+        <h4>Adresse:</h4>
+        <p>@ViewBag.User.PropertyToString("StreetAddress")<br />@ViewBag.User.PropertyToString("postalCode") / @ViewBag.User.PropertyToString("l") (@ViewBag.User.PropertyToString("st"))<br />@ViewBag.User.PropertyToString("co")</p>
+    </div>
+    <div class="col-lg-6">
+        <h4>Téléphone:</h4>
+        <p>Home: @ViewBag.User.PropertyToString("homePhone")<br />Pager: @ViewBag.User.PropertyToString("pager")<br />Mobile: @ViewBag.User.PropertyToString("mobile")<br />Fax: @ViewBag.User.PropertyToString("facsimileTelephoneNumber")<br />IP Phone: @ViewBag.User.PropertyToString("ipPhone")</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <h4>Supérieur:</h4>
+        <p>
+            @if (ViewBag.User.GetManager() != null)
+            {
+                <a href="~/Info/DetailUser/@ViewBag.User.GetManager().PropertyToString("samAccountName")">@ViewBag.User.GetManager().PropertyToString("cn")</a>
+            }
+        </p>
+    </div>
+    <div class="col-lg-6">
+        <h4>Subordonnés directs:</h4>
+        <ul>
+            @foreach (var report in ViewBag.User.GetDirectReports())
+            {
+                <li><a href="~/Info/DetailUser/@report.PropertyToString("samAccountName")">@report.PropertyToString("cn")</a></li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <h4>Groupes:</h4>
+        <ul class="group">
+            @foreach (var group in ViewBag.User.GetGroups())
+            {
+                <li><a onclick="javascript:getSubGroups(this);" data-sam-account-name="@group.PropertyToString("samAccountName")"><i class="fas fa-caret-right"></i></a> @group.PropertyToString("samAccountName") <a href="~/Info/DetailGroup/@group.PropertyToString("samAccountName")/0"><i class="fas fa-external-link-alt"></i></a></li>
+            }
+        </ul>
+    </div>
+</div>
+<script>
+    function getSubGroups(obj) {
+        if ($(obj).parent().find("ul").length == 0) {
+            $.post({
+                url: "/Info/AjaxSubGroups",
+                data: { samAccountName: obj.dataset.samAccountName },
+                success: function (result) {
+                    $(result).hide().appendTo($(obj).parent()).show('normal');
+                    $(obj).find("i").removeClass("fa-caret-right");
+                    $(obj).find("i").addClass("fa-caret-down");
+                }
+            });
+        } else {
+            $(obj).parent().find("ul").toggle('normal');
+            $(obj).find("i").toggleClass("fa-caret-right");
+            $(obj).find("i").toggleClass("fa-caret-down");
+        }
+    }
+</script>

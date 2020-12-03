@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/BaseLayout.cshtml";
+    ViewBag.Title = "Rechercher un utilisateur";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <form method="post">
+            <div id="form-username" style="@(ViewBag.FindBy == "username" ? "" : "display: none;")">
+                <a href="javascript:findByNames()">Rechercher par prénom / nom</a><br />
+                <label for="username">Identifiant :</label>
+                <input type="text" name="username" id="username" />
+            </div>
+            <div id="form-names" style="@(ViewBag.FindBy == "names" ? "" : "display: none;")">
+                <a href="javascript:findByUsername()">Rechercher par identifiant</a><br />
+                <label for="firstname">Prénom :</label>
+                <input type="text" name="firstname" id="firstname" />
+                <label for="lastname">Nom :</label>
+                <input type="text" name="lastname" id="lastname" /><br />
+            </div>
+            <input type="hidden" name="findBy" id="findBy" value="@ViewBag.FindBy" />
+            <input type="submit" />
+        </form>
+    </div>
+    <div class="col-lg-6 text-right">
+        <a href="~/Info/FindGroup">Rechercher un groupe</a>
+    </div>
+</div>
+
+@if (ViewBag.Users != null)
+{
+    <table class="table">
+        <tr>
+            <th>Identifiant</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Numéro de téléphone</th>
+            <th>Adresse de messagerie</th>
+            <th>Société</th>
+        </tr>
+        @foreach (var usr in ViewBag.Users)
+        {
+            <tr class="@(!usr.IsActive() ? "table-danger" : "")">
+                <td><a href="~/Info/DetailUser/@usr.PropertyToString("samAccountName")">@usr.PropertyToString("samAccountName")</a></td>
+                <td>@usr.PropertyToString("givenName")</td>
+                <td>@usr.PropertyToString("sn")</td>
+                <td>@usr.PropertyToString("description")</td>
+                <td>@usr.PropertyToString("telephoneNumber")</td>
+                <td>@usr.PropertyToString("mail")</td>
+                <td>@usr.PropertyToString("company")</td>
+            </tr>
+        }
+    </table>
+}
+
+<script>
+    function findByNames() {
+        $("#form-username").hide('normal');
+        $("#form-names").show('normal');
+        $("#findBy").val('names');
+    }
+    function findByUsername() {
+        $("#form-names").hide('normal');
+        $("#form-username").show('normal');
+        $("#findBy").val('username');
+    }
+</script>
