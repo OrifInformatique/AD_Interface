@@ -25,7 +25,7 @@ namespace WebApplication1.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("informatique.pomy.orif.ch")]
+        [global::System.Configuration.DefaultSettingValueAttribute("orif.lan")]
         public string ADPath {
             get {
                 return ((string)(this["ADPath"]));

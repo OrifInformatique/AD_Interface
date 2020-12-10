@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ADPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">informatique.pomy.orif.ch</Value>
+      <Value Profile="(Default)">orif.lan</Value>
     </Setting>
   </Settings>
 </SettingsFile>
