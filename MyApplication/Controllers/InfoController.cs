@@ -84,7 +84,9 @@ namespace WebApplication1.Controllers
                     SearchResult result = adSearcher.FindOne();
                     if (result != null)
                     {
-                        ViewBag.User = new UserModel(result.GetDirectoryEntry());
+                        UserModel userModel = new UserModel(result.GetDirectoryEntry());
+                        CheckVPNAccess(GetUserGroup(userModel.PropertyToString("samAccountName")));
+                        ViewBag.User = userModel;
                         return View();
                     }
                 }
@@ -263,10 +265,12 @@ namespace WebApplication1.Controllers
             {
                 if (GetUserGroupProperties(groupPrincipal.Name, "info", "group") == "Acces_VPN")
                 {
+                    ViewBag.Acces_VPN = "oui";
                     return true;
                 }
             }
 
+            ViewBag.VPNAccess = "non";
             return false;
         }
     }

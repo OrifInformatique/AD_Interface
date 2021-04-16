@@ -27,11 +27,11 @@ namespace WebApplication1.Controllers
             {
                 return View();
             }*/
-            List<GroupPrincipal> userGroup = new List<GroupPrincipal>(infoController.GetUserGroup("ViRu"));
+            /*List<GroupPrincipal> userGroup = new List<GroupPrincipal>(infoController.GetUserGroup("ViRu"));
             if (infoController.CheckVPNAccess(userGroup))
             {
                 ViewBag.VPNAccess = "À accès au VPN";
-            }
+            }*/
             return View();
         }
 
