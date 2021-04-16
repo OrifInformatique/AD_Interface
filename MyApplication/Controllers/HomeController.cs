@@ -15,7 +15,18 @@ namespace WebApplication1.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            InfoController infoController = new InfoController();
+            string currentUser = infoController.GetUsername();
+            //ViewBag.username = infoController.GetUsername();
+            ViewBag.extensionAttribute = infoController.GetUserProperties(currentUser);
+
+            if (!infoController.CheckUserRight(currentUser))
+            {
+                return View("AccessDenied");
+            } else
+            {
+                return View();
+            }
         }
 
         public ActionResult Login(string username = "", string password = "")

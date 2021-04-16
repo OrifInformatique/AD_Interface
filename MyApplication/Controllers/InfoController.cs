@@ -81,6 +81,7 @@ namespace WebApplication1.Controllers
                 adSearcher.Filter = "(&(samAccountName=" + id + ")(objectCategory=person))";
                 try
                 {
+                    GetUserProperties(id);
                     SearchResult result = adSearcher.FindOne();
                     if (result != null)
                     {
@@ -199,6 +200,55 @@ namespace WebApplication1.Controllers
             }
             ViewBag.groups = groups.ToArray();
             return View();
+        }
+
+        public string GetUsername()
+        {
+            var user = System.Web.HttpContext.Current.User;
+            var name = user.Identity.Name;
+
+            var slashIndex = name.IndexOf("\\");
+            return slashIndex > -1
+                ? name.Substring(slashIndex + 1)
+                : name.Substring(0, name.IndexOf("@"));
+        }
+
+        public string GetProperty(SearchResult searchResult, string PropertyName)
+        {
+            if (searchResult.Properties.Contains(PropertyName))
+            {
+                return searchResult.Properties[PropertyName][0].ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public string GetUserProperties(string username)
+        {
+            string property = "";
+            DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
+            adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=person))";
+
+            foreach (SearchResult searchResult in adSearcher.FindAll())
+            {
+                property = GetProperty(searchResult, "comment");
+            }
+
+            return property;
+        }
+
+        public bool CheckUserRight(string username)
+        {
+            string canAccess = GetUserProperties(username);
+            if(canAccess != "AD_Interface_admin")
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
         }
     }
 }

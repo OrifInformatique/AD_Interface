@@ -349,6 +349,7 @@
     <Content Include="Views\Check\SAIGroup.cshtml" />
     <Content Include="Views\Check\UsersAddress.cshtml" />
     <Content Include="Views\Errors\Dashboard.cshtml" />
+    <Content Include="Views\Home\AccessDenied.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
