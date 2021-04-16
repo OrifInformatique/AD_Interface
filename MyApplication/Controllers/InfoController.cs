@@ -212,17 +212,18 @@ namespace WebApplication1.Controllers
                 : name.Substring(0, name.IndexOf("@"));
         }
 
-        public string GetUserGroupProperties(string username, string userProperty, string searchObject)
+        public string GetUserGroupProperties(string userGroup, string userGroupProperty, string searchObject)
         {
             string property = "";
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
-            adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=" + searchObject + "))";
+            adSearcher.Filter = "(&(samAccountName=" + userGroup + ")(objectCategory=" + searchObject + "))";
 
-            foreach (SearchResult searchResult in adSearcher.FindAll())
+            SearchResultCollection searchResult = adSearcher.FindAll();
+            foreach (SearchResult result in searchResult)
             {
-                if (searchResult.Properties.Contains(userProperty))
+                if (result.Properties.Contains(userGroupProperty))
                 {
-                    return searchResult.Properties[userProperty][0].ToString();
+                    return result.Properties[userGroupProperty][0].ToString();
                 }
                 else
                 {
@@ -237,6 +238,36 @@ namespace WebApplication1.Controllers
         {
             string extensionAttribute6 = GetUserGroupProperties(username, "comment", "person");
             return (extensionAttribute6 == "AD_Interface_admin") ;
+        }
+
+        public List<GroupPrincipal> GetUserGroup(string username)
+        {
+            List<GroupPrincipal> group = new List<GroupPrincipal>();
+            UserPrincipal user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain), username);
+            PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
+
+            foreach (Principal p in groups)
+            {
+                if (p is GroupPrincipal)
+                {
+                    group.Add((GroupPrincipal)p);
+                }
+            }
+
+            return group;
+        }
+
+        public bool CheckVPNAccess(List<GroupPrincipal> group)
+        {
+            foreach(GroupPrincipal groupPrincipal in group)
+            {
+                if (GetUserGroupProperties(groupPrincipal.Name, "info", "group") == "Acces_VPN")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.DirectoryServices.AccountManagement;
@@ -16,7 +17,7 @@ namespace WebApplication1.Controllers
         public ActionResult Index()
         {
             InfoController infoController = new InfoController();
-            string currentUser = infoController.GetUsername();
+            /*string currentUser = infoController.GetUsername();
             ViewBag.extensionAttribute = infoController.GetUserGroupProperties(currentUser, "comment", "person");
 
             if (!infoController.CheckUserRight(currentUser))
@@ -25,9 +26,13 @@ namespace WebApplication1.Controllers
             } else
             {
                 return View();
+            }*/
+            List<GroupPrincipal> userGroup = new List<GroupPrincipal>(infoController.GetUserGroup("ViRu"));
+            if (infoController.CheckVPNAccess(userGroup))
+            {
+                ViewBag.VPNAccess = "À accès au VPN";
             }
-            /*infoController.checkVPNAccess("ViRu");
-            return View();*/
+            return View();
         }
 
         public ActionResult Login(string username = "", string password = "")
