@@ -81,7 +81,6 @@ namespace WebApplication1.Controllers
                 adSearcher.Filter = "(&(samAccountName=" + id + ")(objectCategory=person))";
                 try
                 {
-                    GetUserProperties(id);
                     SearchResult result = adSearcher.FindOne();
                     if (result != null)
                     {
@@ -213,27 +212,22 @@ namespace WebApplication1.Controllers
                 : name.Substring(0, name.IndexOf("@"));
         }
 
-        public string GetProperty(SearchResult searchResult, string PropertyName)
-        {
-            if (searchResult.Properties.Contains(PropertyName))
-            {
-                return searchResult.Properties[PropertyName][0].ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-
-        public string GetUserProperties(string username)
+        public string GetUserGroupProperties(string username, string userProperty, string searchObject)
         {
             string property = "";
             DirectorySearcher adSearcher = new DirectorySearcher(new DirectoryEntry("LDAP://" + Settings.Default.ADPath));
-            adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=person))";
+            adSearcher.Filter = "(&(samAccountName=" + username + ")(objectCategory=" + searchObject + "))";
 
             foreach (SearchResult searchResult in adSearcher.FindAll())
             {
-                property = GetProperty(searchResult, "comment");
+                if (searchResult.Properties.Contains(userProperty))
+                {
+                    return searchResult.Properties[userProperty][0].ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
 
             return property;
@@ -241,14 +235,8 @@ namespace WebApplication1.Controllers
 
         public bool CheckUserRight(string username)
         {
-            string canAccess = GetUserProperties(username);
-            if(canAccess != "AD_Interface_admin")
-            {
-                return false;
-            } else
-            {
-                return true;
-            }
+            string extensionAttribute6 = GetUserGroupProperties(username, "comment", "person");
+            return (extensionAttribute6 == "AD_Interface_admin") ;
         }
     }
 }

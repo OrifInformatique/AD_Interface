@@ -17,8 +17,7 @@ namespace WebApplication1.Controllers
         {
             InfoController infoController = new InfoController();
             string currentUser = infoController.GetUsername();
-            //ViewBag.username = infoController.GetUsername();
-            ViewBag.extensionAttribute = infoController.GetUserProperties(currentUser);
+            ViewBag.extensionAttribute = infoController.GetUserGroupProperties(currentUser, "comment", "person");
 
             if (!infoController.CheckUserRight(currentUser))
             {
@@ -27,6 +26,8 @@ namespace WebApplication1.Controllers
             {
                 return View();
             }
+            /*infoController.checkVPNAccess("ViRu");
+            return View();*/
         }
 
         public ActionResult Login(string username = "", string password = "")
